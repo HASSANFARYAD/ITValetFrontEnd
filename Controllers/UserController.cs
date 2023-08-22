@@ -297,34 +297,30 @@ namespace ITValetFrontEnd.Controllers
         public async Task<IActionResult> CheckoutPayment(CheckOutDTO Data)
         {
             var loggedInUser = await _helper.ValidateUserAsync();
-            if (loggedInUser == null)
-            {
-                return RedirectToAction("UserLogin", "Auth");
-            }
             var userResponse = await _adminService.GetUserById(loggedInUser.Id, loggedInUser.Token);
-
-            if (userResponse.StatusCode == "200" && userResponse.Status==true)
+            if (userResponse.StatusCode == "200" && userResponse.Status == true)
             {
                 var updateUserRecord = JsonConvert.DeserializeObject<UserListDto>(userResponse.Data.ToString());
                 ViewBag.UserRecord = updateUserRecord;
             }
-
+            // Calculate working hours
             var workingHours = (float)TimeSpan.FromTicks(Convert.ToDateTime(Data.ToDateTime).Subtract(Convert.ToDateTime(Data.FromDateTime)).Ticks).TotalHours;
             Data.wHours = workingHours.ToString("0.00");
-
-            Data.workCharges = (25 * workingHours).ToString();
-            ViewBag.PayableOrderCharges = Data.workCharges;
-
-            Data.stripeFee = (Convert.ToDouble(Data.workCharges) * 0.04f).ToString(); // 4% stripe fee
-            Data.workCharges += Data.stripeFee;
-
-            ViewBag.PayableAmount = (Convert.ToDouble(Data.workCharges) * 100).ToString(); // Convert to cents for Stripe
-
-            Data.platformFee = (Convert.ToDouble(Data.workCharges) * 0.13f).ToString(); // 13% platform fee
-
+            // Calculate work charges
+            decimal workCharges = 25 * (decimal)workingHours;
+            ViewBag.PayableOrderCharges = workCharges.ToString("0.00");
+            // Calculate stripe fee (4% of work charges)
+            decimal stripeFee = workCharges * 0.04m;
+            Data.stripeFee = stripeFee.ToString("0.00");
+            // Calculate total payable amount (work charges + stripe fee)
+            decimal totalPayableAmount = workCharges + stripeFee;
+            ViewBag.PayableAmount = totalPayableAmount.ToString("0.00"); // Convert to cents for Stripe
+            Data.workCharges = totalPayableAmount.ToString("0.00");
+            // Calculate platform fee (13% of total payable amount)
+            decimal platformFee = totalPayableAmount * 0.13m;
+            Data.platformFee = platformFee.ToString("0.00");
             return View(Data);
         }
-
 
         public async Task<IActionResult> ChargePayment(CheckOutDTO Data)
         {
@@ -339,7 +335,6 @@ namespace ITValetFrontEnd.Controllers
 
             return RedirectToAction("Orders", "Seller", new { msg = "Payment Successful!" });
         }
-
 
         #endregion
         

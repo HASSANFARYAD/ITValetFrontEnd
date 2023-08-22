@@ -9,153 +9,153 @@ build_property.EnforceExtendedAnalyzerRules =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = ITValetFrontEnd
 build_property.RootNamespace = ITValetFrontEnd
-build_property.ProjectDir = D:\Nodlays Other Projects\ITValet\ITValetFrontEnd\
+build_property.ProjectDir = D:\Nodlays Other Projects\ITValet\ITValets\ITValetFrontEnd\
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = D:\Nodlays Other Projects\ITValet\ITValetFrontEnd
+build_property.MSBuildProjectDirectory = D:\Nodlays Other Projects\ITValet\ITValets\ITValetFrontEnd
 build_property._RazorSourceGeneratorDebug = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Admin/AddNewUser.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Admin/AddNewUser.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cQWRkTmV3VXNlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Admin/FeedbackRecord.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Admin/FeedbackRecord.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRmVlZGJhY2tSZWNvcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Admin/Index.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Admin/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Admin/UserSubscriptionRecord.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Admin/UserSubscriptionRecord.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVXNlclN1YnNjcmlwdGlvblJlY29yZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Admin/UserUnderReviews.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Admin/UserUnderReviews.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVXNlclVuZGVyUmV2aWV3cy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Admin/ViewUser.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Admin/ViewUser.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cVmlld1VzZXIuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Auth/ForgotPassword.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Auth/ForgotPassword.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxGb3Jnb3RQYXNzd29yZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Auth/Login.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Auth/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Auth/Register.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Auth/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Auth/ResetPassword.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Auth/ResetPassword.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxSZXNldFBhc3N3b3JkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Auth/UpdatePassword.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Auth/UpdatePassword.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxVcGRhdGVQYXNzd29yZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Auth/UpdateProfile.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Auth/UpdateProfile.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxVcGRhdGVQcm9maWxlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Auth/UserForgotPassword.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Auth/UserForgotPassword.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxVc2VyRm9yZ290UGFzc3dvcmQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Auth/UserLogin.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Auth/UserLogin.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxVc2VyTG9naW4uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Home/About.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Home/About.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBYm91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Home/Contact.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Home/Contact.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDb250YWN0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Home/Index.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Home/Messages.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Home/Messages.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNZXNzYWdlcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Home/Privacy.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Home/SystemPackages.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Home/SystemPackages.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTeXN0ZW1QYWNrYWdlcy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Shared/Error.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Shared/_AuthLayout.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Shared/_AuthLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BdXRoTGF5b3V0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Shared/_UserSideLayout.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Shared/_UserSideLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9Vc2VyU2lkZUxheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Shared/_ValidationScriptsPartial.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/User/Account.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/User/Account.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxBY2NvdW50LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/User/CheckoutPayment.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/User/CheckoutPayment.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxDaGVja291dFBheW1lbnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/User/ManageAppointments.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/User/ManageAppointments.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxNYW5hZ2VBcHBvaW50bWVudHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/User/ManageOrders.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/User/ManageOrders.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxNYW5hZ2VPcmRlcnMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/User/OrderDetail.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/User/OrderDetail.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxPcmRlckRldGFpbC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/User/RequestService.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/User/RequestService.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxSZXF1ZXN0U2VydmljZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/User/UsersForRequestedService.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/User/UsersForRequestedService.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxVc2Vyc0ZvclJlcXVlc3RlZFNlcnZpY2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/User/ViewUserProfile.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/User/ViewUserProfile.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXNlclxWaWV3VXNlclByb2ZpbGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/_ViewImports.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/_ViewStart.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Shared/_AdminLayout.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Shared/_AdminLayout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9BZG1pbkxheW91dC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = b-hm8pj7l5aw
 
-[D:/Nodlays Other Projects/ITValet/ITValetFrontEnd/Views/Shared/_Layout.cshtml]
+[D:/Nodlays Other Projects/ITValet/ITValets/ITValetFrontEnd/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-awkrx8fhyw

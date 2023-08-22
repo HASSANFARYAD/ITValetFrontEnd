@@ -8,17 +8,6 @@
 <section class="py-5">
     <div class="container">
         <div class="row">
-@*   @if (Model.sessionCount > 0 && Model.title != "Subscription")
-            {
-                <div class="col-lg-3 mb-2">
-                    <div class="bg-white rounded shadow-sm py-3 mt-3" id="paymentMethod">
-                        <div class="dropdown-menu-show">
-                            <p class="dropdown-item pt-2"><input class="mr-2" type="radio" name="subscribtionCharges" value="200" id="defaultCheck1" checked>Pay By Card</p>
-                            <p class="dropdown-item pt-2"><input class="mr-2" type="radio" name="subscribtionCharges" value="200" id="defaultCheck2">Use Free Session (@Model.sessionCount sessions left)</p>
-                        </div>
-                    </div>
-                </div>
-            }*@
             <div id="addClassOfSectionAccordingToSpace" class="">
                 <div class="bg-white rounded shadow-sm sidebar-page-right">
                     <div>
@@ -65,14 +54,14 @@
                                         <p class="text-muted font-weight-bold mb-0" id="v2">$@Model.stripeFee</p>
                                     </div>
                                 </div>
-                                <div class="d-flex border-bottom">
+                                @*<div class="d-flex border-bottom">
                                     <div class="p-3">
                                         <p class="text-muted font-weight-bold mb-0" id="p3">HST (13 %)</p>
                                     </div>
                                     <div class="p-3 ml-auto">
                                         <p class="text-muted font-weight-bold mb-0" id="v3">$@Model.platformFee</p>
                                     </div>
-                                </div>
+                                </div>*@
                                 @if (Model.title != "Subscription")
                                 {
                                     <div class="d-flex" id="Reimbursements">
@@ -101,9 +90,7 @@
                                         }
                                     </div>
                                 </div>
-
                             </div>
-
 
                             <div style="display: flex; justify-content: center;">
                                 @if (Model.title != "Subscription")

@@ -9508,11 +9508,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Nodlays Other Projects\\ITValet\\ITValetFrontEnd\\ITValetFrontEnd.csproj",
+      "projectUniqueName": "D:\\Nodlays Other Projects\\ITValet\\ITValets\\ITValetFrontEnd\\ITValetFrontEnd.csproj",
       "projectName": "ITValetFrontEnd",
-      "projectPath": "D:\\Nodlays Other Projects\\ITValet\\ITValetFrontEnd\\ITValetFrontEnd.csproj",
+      "projectPath": "D:\\Nodlays Other Projects\\ITValet\\ITValets\\ITValetFrontEnd\\ITValetFrontEnd.csproj",
       "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
-      "outputPath": "D:\\Nodlays Other Projects\\ITValet\\ITValetFrontEnd\\obj\\",
+      "outputPath": "D:\\Nodlays Other Projects\\ITValet\\ITValets\\ITValetFrontEnd\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
