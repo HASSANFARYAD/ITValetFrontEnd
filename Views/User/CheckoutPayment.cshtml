@@ -1,0 +1,147 @@
+﻿@using ITValetFrontEnd.Models
+@model CheckOutDTO
+@{
+    ViewData["Title"] = "CheckoutPayment";
+    Layout = "~/Views/Shared/_UserSideLayout.cshtml";
+}
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+@*   @if (Model.sessionCount > 0 && Model.title != "Subscription")
+            {
+                <div class="col-lg-3 mb-2">
+                    <div class="bg-white rounded shadow-sm py-3 mt-3" id="paymentMethod">
+                        <div class="dropdown-menu-show">
+                            <p class="dropdown-item pt-2"><input class="mr-2" type="radio" name="subscribtionCharges" value="200" id="defaultCheck1" checked>Pay By Card</p>
+                            <p class="dropdown-item pt-2"><input class="mr-2" type="radio" name="subscribtionCharges" value="200" id="defaultCheck2">Use Free Session (@Model.sessionCount sessions left)</p>
+                        </div>
+                    </div>
+                </div>
+            }*@
+            <div id="addClassOfSectionAccordingToSpace" class="">
+                <div class="bg-white rounded shadow-sm sidebar-page-right">
+                    <div>
+                        <div class="p-3">
+                            <p class="text-muted font-weight-bold h6 mb-3">Pay to Your IT Valet</p>
+                            <p class="text-muted font-weight-bold mb-0">Project Title : @Model.title</p>
+                            <div class="border mt-4 mb-2 rounded">
+                                @if (Model.title != "Subscription")
+                                {
+                                    <div class="d-flex border-bottom">
+                                        <div class="p-3">
+                                            <p class="text-muted font-weight-bold mb-0" id="p1">Amount You Pay = @Model.wHours * @Model.hourlyRate</p>
+                                        </div>
+                                        <div class="p-3 ml-auto">
+                                            <p class="text-muted font-weight-bold mb-0" id="v1">$@ViewBag.PayableOrderCharges</p>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="d-flex border-bottom">
+                                        <div class="p-3">
+                                            <p class="text-muted font-weight-bold mb-0">Amount You Pay</p>
+                                        </div>
+                                        <div class="p-3 ml-auto">
+                                            @*<p class="text-muted font-weight-bold mb-0">$@Model.subscribtionCharges</p>*@
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex border-bottom">
+                                        <div class="p-3">
+                                            <p class="text-muted font-weight-bold mb-0">Subscription Duration</p>
+                                        </div>
+                                        <div class="p-3 ml-auto">
+                                            <p class="text-muted font-weight-bold mb-0">@Model.duration</p>
+                                        </div>
+                                    </div>
+                                }
+                                <div class="d-flex border-bottom">
+                                    <div class="p-3">
+                                        <p class="text-muted font-weight-bold mb-0" id="p2">Credit card processing fee (4 %)</p>
+                                    </div>
+                                    <div class="p-3 ml-auto">
+                                        <p class="text-muted font-weight-bold mb-0" id="v2">$@Model.stripeFee</p>
+                                    </div>
+                                </div>
+                                <div class="d-flex border-bottom">
+                                    <div class="p-3">
+                                        <p class="text-muted font-weight-bold mb-0" id="p3">HST (13 %)</p>
+                                    </div>
+                                    <div class="p-3 ml-auto">
+                                        <p class="text-muted font-weight-bold mb-0" id="v3">$@Model.platformFee</p>
+                                    </div>
+                                </div>
+                                @if (Model.title != "Subscription")
+                                {
+                                    <div class="d-flex" id="Reimbursements">
+                                        <div class="p-3">
+                                            <p class="text-muted font-weight-bold mb-0">Your Reimbursements <span data-toggle="tooltip" data-placement="right" title="Funds credited back to your account for canceled orders."><i class="fa fa-question-circle" aria-hidden="true"></i></span></p>
+                                            <p class="mb-0 text-muted">Funds that were credited back to your account for canceled orders.Stripe refund charges may be applicable.</p>
+                                        </div>
+                                        <div class="p-3 ml-auto">
+                                            <p class="text-muted font-weight-bold mb-0">$@ViewBag.PayableOrderCharges</p>
+                                        </div>
+                                    </div>
+                                }
+
+                                <div class="bg-light d-flex border-bottom">
+                                    <div class="p-3">
+                                        <p class="text-muted font-weight-bold mb-0">PAYING</p>
+                                    </div>
+                                    <div class="border-left p-3 ml-auto">
+                                        @if (Model.title != "Subscription")
+                                        {
+                                            <p class="text-muted font-weight-bold mb-0" id="v5">TOTAL $@Model.workCharges</p>
+                                        }
+                                        else
+                                        {
+                                            <p class="text-muted font-weight-bold mb-0">TOTAL $0</p>
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div style="display: flex; justify-content: center;">
+                                @if (Model.title != "Subscription")
+                                {
+                                    <form id="stripe-form" action="@Url.Action("ChargePayment","User")" method="post" style="margin-right: 20px;">
+                                        <input type="text" id="wCharges" class="form-control" name="workCharges" value="@Model.workCharges" hidden>
+                                        <input type="text" class="form-control" name="FromDateTime" value="@Model.FromDateTime" hidden>
+                                        <input type="text" class="form-control" name="ToDateTime" value="@Model.ToDateTime" hidden>
+                                        <input type="text" class="form-control" name="title" value="@Model.title" hidden>
+                                        <input type="text" class="form-control" name="desc" value="@Model.desc" hidden>
+                                        <input type="text" class="form-control" name="customerId" value="@ViewBag.UserRecord.Id" hidden>
+                                        <input type="text" class="form-control" name="butlerId" value="@Model.ValetId" hidden>
+                                        <input type="text" id="sessionUsed" class="form-control" name="wHours" value="@Model.wHours" hidden disabled>
+                                        <!-- Add space between the buttons -->
+                                        <script src="//checkout.stripe.com/v2/checkout.js" id="sub2" class="stripe-button" style="margin-left:20px;" data-key="pk_test_51LdJU1JGItIO6che36z9ZVzXobOZwgqCGtjhNU1Xh5jj8rYrwrkjwl4ZvvpZvtEwygS5c51cl4abkLAliD9HZe0400fAG3WJm9" data-label="Pay with Stripe" data-description="@Model.title" data-amount="@ViewBag.PayableAmount"></script>
+                                        <p class="text-danger" id="msg"></p>
+                                    </form>
+                                    <form id="payPal-Form" action="@Url.Action("PostCheckoutForOrder","PayPalClientGateway")" method="post">
+                                        <input type="text" id="wCharges" class="form-control" name="OrderPrice" value="@Model.workCharges" hidden>
+                                        <input type="text" class="form-control" name="EndDate" value="@Model.FromDateTime" hidden>
+                                        <input type="text" class="form-control" name="StartDate" value="@Model.ToDateTime" hidden>
+                                        <input type="text" class="form-control" name="OrderTitle" value="@Model.title" hidden>
+                                        <input type="text" class="form-control" name="OrderDescription" value="@Model.desc" hidden>
+                                        <input type="text" class="form-control" name="ClientId" value="@ViewBag.UserRecord.Id" hidden>
+                                        <input type="text" class="form-control" name="ValetId" value="3" hidden>
+                                        <button id="paypalbtn" class="btn btn-success btn-lg" value="PAY">Pay With PayPal</button>
+                                        <p class="text-danger" id="msg"></p>
+                                    </form>
+                                }
+                                else
+                                {
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

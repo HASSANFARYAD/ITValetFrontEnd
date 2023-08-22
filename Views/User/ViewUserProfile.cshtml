@@ -1,0 +1,619 @@
+﻿@using System.Security.Claims;
+@using ITValetFrontEnd.HelperClasses;
+@using Microsoft.Extensions.Options
+@{
+    var Userid = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Sid)?.Value;
+   
+    ViewBag.Title = "IT Valet Details";
+    Layout = "~/Views/Shared/_UserSideLayout.cshtml";
+
+    int maxSkillsToShow = 5; // Maximum number of skills to show initially
+    int skillCount = 0; // Counter for the number of skills displayed
+}
+
+<div class="main-page second py-5">
+    <div class="container">
+        @if (ViewBag.msg != "" && ViewBag.msg != null)
+        {
+            <div class="h5 alert alert-info" id="alertMsg" role="alert">
+                <span>@ViewBag.msg</span>
+            </div>
+        }
+        <div class="row">
+            <div class="col-lg-4 left">
+                <div class="profile_info">
+                    <div class="seller-card">
+                        <div>
+                            @if (ViewBag.UserRecord.Status == "1")
+                            {
+                                <div class="user-online-indicator is-online" data-user-id="1152855">
+                                    <i class="fa fa-circle"></i>Online
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="user-online-indicator is-online" style="border-color:red;color:red !important" data-user-id="1152855">
+                                    <i class="fa fa-circle"></i>Offline
+                                </div>
+                            }
+                        </div>
+
+                        <div class="user-profile-info">
+                            <div>
+                                <div>
+                                    <label class="user-pict" style="height:300px">
+                                        @if (ViewBag.UserRecord.ProfilePicture == "" || @ViewBag.UserRecord.ProfilePicture == null)
+                                        {
+                                            <img src="/FrontAssets/images/user/s4.png" width=256 height=256
+                                                 class="img-fluid rounded-circle" onerror="this.error=null;this.src='~/frontAssets/images/user/s4.png';" id="imgprev" alt="Responsive img" />
+                                        }
+                                        else
+                                        {
+                                            <img src="@ViewBag.UserRecord.ProfilePicture"
+                                                 class="img-fluid rounded-circle" style="height:inherit;" alt="Responsive img" onerror="this.error=null;this.src='~/frontAssets/images/user/s4.png';" />
+                                        }
+                                        <a href="#"
+                                           class="user-badge-round user-badge-round-med locale-en-us top-rated-seller"></a>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="user-profile-label pt-3">
+                                <div class="username-line">
+                                    <a href="#" id="name" class="seller-link">@ViewBag.UserRecord.FirstName @ViewBag.UserRecord.LastName</a>
+                                </div>
+                                
+                                @if (@ViewBag.UserRecord.Availability == "1")
+                                {
+                                    <p class="mt-1 oneliner text-success">Available</p>
+                                }
+                                else
+                                {
+                                    <p class="mt-1 oneliner text-danger">Not Available</p>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="buttons-wrapper">
+                            @if (ViewBag.UserRecord.Role == "4")
+                            {
+                                <a href="#" class="btn-lrg-standard btn-contact-me js-contact-me js-open-popup-join">Contact Me</a>
+                            }
+                            else
+                            {
+                                <button id="contactUser" onclick="contactUser()" class="btn-lrg-standard btn-contact-me js-contact-me js-open-popup-join">
+                                    Contact Me
+                                </button>
+                            }
+
+                            @if (@ViewBag.UserRecord != null && @ViewBag.UserRecord.Id == @ViewBag.loggedinUser.Id)
+                            {
+                                <button class="btn btn-outline-danger ml-2"><i class="fa fa-solid fa-gift" style="font-size:20px;" title="Share User Refferal"></i></button>
+                            }
+                            else
+                            {
+                                <button onclick="Copy_Func()" class="btn btn-outline-danger ml-2"><i class="fa fa-solid fa-gift" style="font-size:20px;" title="Share User Refferal"></i></button>
+                            }
+                        </div>
+
+                        <div class="user-stats-desc">
+                            <ul class="user-stats">
+                                <li class="">From :<strong> @ViewBag.UserRecord.Country</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box shadow-sm rounded bg-white mb-3">
+                    <div class="box-title border-bottom p-3">
+                        <div class="row">
+                            <div class="col-md-12 col-12 d-flex justify-content-start">
+                                <h6 class="m-0">Education</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3 border-bottom">
+                        <div class="box-body">
+                            <div class="mr-2 py-3" id="myEducationDisplaySection">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box shadow-sm rounded bg-white mb-3">
+                    <div class="box-title border-bottom p-3">
+                        <div class="row">
+                            <div class="col-md-12 col-12 d-flex justify-content-start">
+                                <h6 class="m-0">Services Offered</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-3 border-bottom">
+                        <div class="box-body">
+                            <div class="mr-2 py-3" id="myExperienceDisplaySection"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-lg-8 right">
+                <div class="stats-desc" style="margin-top: 0px !important; margin-bottom: 24px !important;">
+                    <div class="row py-2">
+                        <div class="col-md-4 col-sm-12">
+                            <label class="font-weight-bold"> From </label>
+                            @ViewBag.UserRecord.Country
+                        </div>
+                        <div class="col-md-8 col-sm-12">
+                            <label class="font-weight-bold"> Language </label>
+                            @ViewBag.UserRecord.Language
+                        </div>
+                    </div>
+                    @if (ViewBag.UserRecord.AvailabilitySlots != null)
+                    {
+                        <div class="row border-bottom py-2">
+                            <div class="col-sm-12">
+                                <div class="js-form-message" id="timeSelectionRowFromSlots" style="display:block">
+                                    <label class="font-weight-bold"> Available Slots<span class="text-danger">*</span></label>
+                                    <div class="form-group">
+                                        @{
+                                            string[] siy = ViewBag.UserRecord.AvailabilitySlots.Split(",");
+                                            List<string> selectedSlots = siy.ToList();
+                                            if (siy[0] == "1")
+                                            {
+                                                <label class="mr-3"><input disabled type="checkbox" checked> Morning (7am-12pm)</label>
+                                            }
+                                            if (siy[1] == "2")
+                                            {
+                                                <label class="mr-3"><input disabled type="checkbox" checked> Afternoon (12pm-5pm)</label>
+                                            }
+                                            if (siy[2] == "3")
+                                            {
+                                                <label class="mr-3"><input disabled type="checkbox" checked> Evening (5pm-10pm)</label>
+                                            }
+                                            if (siy[3] == "4")
+                                            {
+                                                <label><input disabled type="checkbox" checked> Night (12am-7am)</label>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="row mt-2 py-2">
+                        <div class="col-md-12">
+                            <b>IT Valet's Current Time:</b>
+                            <strong class="text-danger">@ViewBag.UserRecord.CurrentTime</strong>
+                        </div>
+                    </div>
+
+
+                </div>
+                
+                <div class="stats-desc" style="margin-top: 0px !important; margin-bottom: 24px !important;">
+                    @if (@ViewBag.UserRecord.Description != null)
+                    {
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p class="font-weight-bold">About</p>
+                                <p>@ViewBag.UserRecord.Description</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+                
+                <div class="seller-profile">
+                    <div class="description">
+                        <div class="skills">
+                            <h3>Providing Services</h3>
+                            <ul id="skillsList">
+                                @if (ViewBag.UserSkillsList != null)
+                                {
+                                    foreach (var x in @ViewBag.UserSkillsList)
+                                    {
+                                        string split = @x.SkillName;
+                                        if (!@String.IsNullOrEmpty(split))
+                                        {
+                                            <li class="skill-item" style="background:#138496 !important;">
+                                                <a style="color:white !important;">@split</a>
+                                            </li>
+                                        }
+                                    }
+                                }
+                            </ul>
+                            @if (skillCount > maxSkillsToShow)
+                            {
+                                <div id="seeMoreBtn" class="see-more-btn">See Less</div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                @*<div class="seller-profile">
+                    <div style="padding:5px !important;">
+                        <h5>Reviews</h5>
+                        <div>
+                            @if (@ViewBag.Reviews != null)
+                            {
+                                @foreach (var x in @ViewBag.Reviews)
+                                {
+                                    @if (@x.IsActive != 0)
+                                    {
+                                        <br />
+                                        @if (x.Seller != null)
+                                        {
+                                            <p style="font-size:15px;font-weight:bold;">@x.Seller.FirstName @x.Seller.LastName</p>
+
+                                        }
+                                        @if (x.Seller != null)
+                                        {
+                                            <p>@x.BuyerComment</p>
+                                        }
+
+                                        <p>
+                                            <span class="mr-1">@x.Stars</span>
+                                            @for (int i = 0; i < @x.Stars; i++)
+                                            {
+                                                <span style="color:gold;" class="fa fa-star checked"></span>
+                                            }
+                                        </p>
+                                        <hr />
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>*@
+
+
+                <div class="seller-profile">
+                    <div style="padding:5px !important;">
+                        <h5>Place New Order </h5>
+                        <form action="@Url.Action("CheckoutPayment","User")" method="post" id="placeOrd">
+                            
+                            <div class="form-row">
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="mb-1">From Date Time<span class="text-danger">*</span></label>
+                                        <div class="position-relative ">
+                                            <input type="datetime-local" name="FromDateTime" class="form-control" id="from_instantdatetime" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        <label class="mb-1">To Date Time<span class="text-danger">*</span></label>
+                                        <div class="position-relative">
+                                            <input type="datetime-local" name="ToDateTime" class="form-control" id="to_instantdatetime" required>
+                                        </div>
+                                        <strong id="endtime_validate" style="color:red"></strong>
+                                    </div>
+                                </div>
+
+                                <div class="pt-3 col-lg-12">
+                                    <label>Project Title<span class="text-danger">*</span></label>
+                                    <div class="input-group mb-2 col-md-12 p-0">
+                                        <input type="text" class="form-control" name="title" required>
+                                    </div>
+                                </div>
+
+                                <div class="border-bottom pt-3 col-lg-12">
+                                    <label>Describe the required services - please be as detailed as possible:</label>
+                                    <div class="form-group">
+                                        <textarea class="form-control" id="prodes" name="desc" rows="5" placeholder="I'm looking for..."></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="p-3 d-flex justify-content-center justify-content-md-end">
+
+                                    <input type="text" class="form-control" name="customerId" value="@ViewBag.loggedinUser.Id" hidden>
+                                    <input type="text" class="form-control" name="butlerId" value="@ViewBag.UserRecord.Id" hidden>
+
+                                    <button type="submit" id="sub" class="btn btn-success">Place Order</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section CustomJs{
+<script>
+    var getUserIdFromViewBag = '@ViewBag.UserRecord.Id';
+    
+</script>
+
+<script>
+
+    $("#alertMsg").fadeOut(6000);
+    $('#from').attr('min', new Date($.now()).toISOString().slice(0, 16));
+    $(document).on("change", "#from", function () {
+        var date = $(this).val();
+
+        $('#to').val("");
+        $('#to').attr('min', date);
+    });
+
+    function Copy_Func() {
+        ///* Get the text field */
+        debugger;
+        var copyText = document.getElementById("refval");
+
+        copyToClipboard(copyText.value).then(() => console.log('text copied !'))
+            .catch(() => console.log('error'));
+
+        $("#Referal_linkcoppied").show();
+        $("#Referal_linkcoppied").fadeOut(4000);
+
+        var element = document.getElementById("Referal_linkcoppied");
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+
+    }
+</script>
+
+<script>
+
+    function timecomp_instantorder() {
+        var fromdatetime = new Date(document.getElementById('from_instantdatetime').value);
+        var todatetime = new Date(document.getElementById('to_instantdatetime').value);
+
+        var start_time = fromdatetime.getTime();
+        var end_time = todatetime.getTime();
+
+
+        if (end_time < start_time) {
+
+            $("#endtime_validate").html("Kindly select a time greater than your start time!");
+            $("#to_instantdatetime").val("");
+            $("#endtime_validate").fadeOut(5000);
+        }
+        else {
+            var butlerId = $("#butler_id").val();
+            var start = $("#from_instantdatetime").val();
+            var end = $("#to_instantdatetime").val();
+            $.ajax({
+                type: 'POST',
+
+                url: "../Home/GetOrdersData",
+                data: {
+                    butlerId: butlerId,
+                    StartDateTime: start,
+                    EndDateTime: end,
+                },
+                cache: false,
+                success: function (data) {
+                    if (data == true) {
+                        $("#to_instantdatetime").val("");
+                        alert("IT Valet is booked");
+                    }
+                },
+                error: function (error) {
+                    alert("Error");
+                }
+
+            });
+        }
+    }
+</script>
+
+<script>
+    function checkDateTime(){
+        debugger;
+        var startDateTimeSelectFromCalender = $("#startDateTimeSelectFromCalender").val();
+        var endDateTimeSelectFromCalender = $("#endDateTimeSelectFromCalender").val();
+
+        if(endDateTimeSelectFromCalender == null || endDateTimeSelectFromCalender == "" ||
+        endDateTimeSelectFromCalender == undefined){
+            alert("Wrong Input");
+            $("#endDateTimeSelectFromCalender").val("").change();
+            return false;
+        }
+
+        let getStartDate = new Date(startDateTimeSelectFromCalender);
+        let getEndDate = new Date(endDateTimeSelectFromCalender);
+        let getStartTime = new Date(startDateTimeSelectFromCalender).getTime();
+        let getEndtime = new Date(endDateTimeSelectFromCalender).getTime();
+
+        //Check if Start Date is Small
+        if (getStartDate < getEndDate) {
+            if (getStartTime < getEndtime){
+                console.log(`${getStartTime} is less than ${getEndtime}`);
+            } else if (getStartTime > getEndDate) {
+                console.log(`${getStartTime} is greater than ${getEndtime}`);
+            } else {
+                console.log(`Both dates are equal`);
+            }
+            checkDatesOrder();
+        }
+        else if (getStartDate > getEndDate) { //Check if Start Date is Large
+            alert("End Date Must be Greater Than or Equal to Start Date");
+            $("#endDateTimeSelectFromCalender").val("");
+            return false;
+        }
+        else {//Check if Both dates are equal
+            if (getStartTime < getEndtime) {
+                console.log(`${getStartTime} is less than ${getEndtime}`);
+                checkDatesOrder();
+            } else if (getStartTime > getEndtime) {
+                alert("End Time Must be Greater Than Start Time");
+                $("#endDateTimeSelectFromCalender").val("");
+                return false;
+            } else {
+                alert("End Time Must be Greater Than Start Time");
+                $("#endDateTimeSelectFromCalender").val("");
+                return false;
+            }
+        }
+    }
+
+    function checkDatesOrder(){
+        var butlerId = $("#butler_id").val();
+        var start = $("#startDateTimeSelectFromCalender").val();
+        var end = $("#endDateTimeSelectFromCalender").val();
+        $.ajax({
+            type: 'POST',
+            url: "@Url.Action("GetOrdersData","Home")",
+            data: {
+                butlerId: butlerId,
+                StartDateTime: start,
+                EndDateTime: end,
+            },
+            cache: false,
+            success: function (data) {
+                if (data == true) {
+                    alert("IT Valet is booked");
+                    location.reload();
+                }
+            },
+            error: function (error) {
+                alert("Error");
+            }
+
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        var maxSkillsToShow = 5; // Maximum number of skills to show initially
+
+        debugger;
+        var skillItems = $('.skill-item');
+        var seeMoreBtn = $('#seeMoreBtn');
+
+        skillItems.slice(0, maxSkillsToShow).show();
+
+        if (skillItems.length > maxSkillsToShow) {
+            seeMoreBtn.on('click', function () {
+                skillItems.slice(maxSkillsToShow).toggle();
+                seeMoreBtn.text(function (_, text) {
+                    return text === 'See Less' ? 'See More' : 'See Less';
+                });
+            });
+        }
+    });
+</script>
+
+<script>
+    function getUserEducation() {
+        document.getElementById("myEducationDisplaySection").innerHTML = "";
+        $.ajax({
+            type: 'GET',
+            headers: {
+                'Authorization': Token
+            },
+            url: projectBaseUrl + "User/GetUserEducationByUserId?UserId=" + getUserIdFromViewBag,
+            dataType: "json",
+            success: function (response) {
+                var createTagsBadge = "";
+                if (response.data.length == 0) {
+                    createTagsBadge = "This Valet has not yet added any education.";
+                }
+                else {
+                    for (var i = 0; i < response.data.length; i++) {
+                        createTagsBadge += '<div class="row">' +
+                            '<div class="col-md-12">' +
+                            '<div class="p-3 d-flex align-items-center  border-bottom osahan-post-header">' +
+                            '<div class="font-weight-bold mr-1 overflow-hidden">' +
+                            '<div class="mr-2">' +
+                            '<h6 class="font-weight-bold text-dark mb-0">' + response.data[i].instituteName + '</h6>' +
+                            '<div class="text-truncate text-primary">' + response.data[i].degreeName + '</div>' +
+                            '<div class="small text-gray-500">' + response.data[i].startDate + ' - ' + response.data[i].endDate + ' </div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>';
+                    }
+                }
+                document.getElementById("myEducationDisplaySection").innerHTML = createTagsBadge;
+            },
+            error: function (response) {
+                alert("Something went Wrong Please try again later, or check your internet connection");
+            },
+            complete: function (response) {
+                getUserExperience();
+            }
+        });
+    }
+
+    function getUserExperience() {
+        document.getElementById("myExperienceDisplaySection").innerHTML = "";
+        $.ajax({
+            type: 'GET',
+            headers: {
+                'Authorization': Token
+            },
+            url: projectBaseUrl + "User/GetUserExperienceByUserId?userId=" + getUserIdFromViewBag,
+            dataType: "json",
+            success: function (response) {
+                var createTagsBadge = "";
+                if (response.data.length == 0) {
+                        createTagsBadge = "This Valet has not yet added any services.";
+                }
+                else {
+                    for (var i = 0; i < response.data.length; i++) {
+                        createTagsBadge += '<div class="row">' +
+                            '<div class="col-md-12">' +
+                            '<div class="p-3 d-flex align-items-center  border-bottom osahan-post-header">' +
+                            '<div class="mr-2">' +
+                            '<p style="max-height: 100px; overflow-y: scroll;">' + response.data[i].description + '</p>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>' +
+                            '</div>';
+                    }
+                }
+                document.getElementById("myExperienceDisplaySection").innerHTML = createTagsBadge;
+            },
+            error: function (response) {
+                alert("Something went Wrong Please try again later, or check your internet connection");
+            },
+            complete: function (response){
+                
+            }
+        });
+    }
+
+    getUserEducation();
+</script>
+
+<script>
+    function contactUser() {
+        $("#contactUser").prop("disabled", true);
+        var message = "";
+        var data = {
+            SenderId: '@ViewBag.loggedinUser.Id',
+            ReceiverId: '@ViewBag.UserRecord.Id',
+            Way: "ViewUserProfile",
+        };
+        $.ajax({
+            type: 'POST',
+            url: "@ProjectVariables.BaseUrl" + "Message/PostAddMessage",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(data),
+            dataType: "json",
+            success: function (data) {
+                console.log("success! ", data);
+                if (data.message == "Exist") {
+                    window.location.href = '@ProjectVariables.SystemUrl' + 'Home/Messages?Way=ViewUserProfile&UserId=' + data.id;
+                }
+                else {
+                    window.location.href = '@ProjectVariables.SystemUrl' + 'Home/Messages?Way=ViewUserProfile&UserId=' + data.id;
+                }
+            },
+            error: function (error) {
+                alert(error.responseText.message);
+            },
+            complete: function () {
+                $("#contactUser").prop("disabled", false);
+            }
+        });
+    }
+</script>
+}

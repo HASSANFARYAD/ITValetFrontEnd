@@ -1,0 +1,269 @@
+﻿@{
+    ViewData["Title"] = "ViewUser";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<style>
+    .table > tbody > tr > td {
+        padding: 5px !important;
+    }
+</style>
+<div class="row m-10">
+    <div class="panel panel-flat text-black">
+        <div class="panel-heading" style="background: #E8ECED; padding:1px !important;">
+            <h2 class="text-center text-black">
+                Search
+            </h2>
+            <div class="heading-elements">
+                <ul class="icons-list">
+                    <li><a data-action="collapse" class="rotate-180"></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="panel-body pt-20 pb-20" style="display: none">
+            <div class="row">
+                <div class="col-md-6 col-lg-6" style="padding: 20px;padding-top:20px;">
+                    <div class="form-group">
+                        <label><strong>Username:</strong></label>
+                        <input type="text" maxlength="30" class="form-control" placeholder="Search username here" id="searchName" style="background-color:white">
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-6" style="padding: 20px;padding-top:20px;">
+                    <div class="form-group">
+                        <label><strong>Email:</strong></label>
+                        <input type="email" maxlength="40" class="form-control" id="searchEmail" style="background-color:white" placeholder="Search User Email Here">
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-6" style="padding: 20px;padding-top:20px;">
+                    <div class="form-group">
+                        <label><strong>Status:</strong></label>
+                        <select class="form-control custom-select" id="searchStatus">
+                            <option value="">Select Status</option>
+                            <option value="1">Activated</option>
+                            <option value="3">Pending Activation</option>
+                            <option value="2">Pending Approval</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <button onclick="clearSearch()" class="btn btn-danger btn-block">Reset</button><br>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12 col-xs-12"></div>
+                <div class="col-md-3 col-sm-12 col-xs-12">
+                    <div class="form-group text-right">
+                        <button onclick="searchTable()" class="btn btn-success btn-block">Search</button><br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel p-20 m-10">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <u><h3>@(ViewBag.ValetOrCustomer == 3 ? "Customer List" : "IT Valet List")</h3></u>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-2 pull-right btn-block">
+            <a href="@Url.Action("AddNewUser", "Admin", new { ValetOrCustomer = @ViewBag.ValetOrCustomer })" class="btn btn-primary m-5 pull-right">Add New</a>
+        </div>
+    </div>
+
+    <input type="hidden" id="way" value="" />
+
+    <div class="table-responsive">
+        <table class="table text-md-nowrap table-striped table-bordered text-center no-footer" id="userTable">
+            <thead class="bg-indigo-800">
+                <tr>
+                    <th class="text-bold" hidden>...</th>
+                    <th class="text-bold text-center" style="min-width: 140px;">First Name</th>
+                    <th class="text-bold text-center" style="min-width: 140px;">Last Name</th>
+                    <th class="text-bold text-center" style="min-width: 140px;">Username</th>
+                    <th class="text-bold text-center" style="min-width: 150px;">Email</th>
+                    <th class="text-bold text-center" style="min-width: 150px;">Status</th>
+                    <th class="text-bold text-center" style="min-width: 130px;">Action</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+@section CustomJs {
+    <script>
+        var role = "@ViewBag.ValetOrCustomer";
+        loadTable();
+
+        function loadTable() {
+            var searchName = $('#searchName').val();
+            var searchEmail = $('#searchEmail').val();
+            var searchStatus = $('#searchStatus').val();
+
+            $('#userTable').DataTable({
+                "ajax": {
+                    "url": projectBaseUrl + "Admin/GetUserList?Role="+role,
+                    "type": "POST",
+                    "dataType": "json",
+                    "headers": {
+                        'Authorization': Token
+                    },
+                    "data": {
+                    }
+                },
+                'columns':
+                [
+                        { "data": "hidden", "name": "0" },
+                        { "data": "firstName", "name": "FirstName" },
+                        { "data": "lastName", "name": "LastName" },
+                        { "data": "userName", "name": "Username" },
+                        { "data": "email", "name": "Email" },
+                        { "data": "status", "name": "Status" },
+                        { "data": "action", "name": "0" },
+                ],
+                'columnDefs':
+                [
+                        {
+                            "targets": 0,
+                            "visible": false,
+                            "searchable": false,
+                            "render": function (data, type, full, meta) {
+                                return null;
+                            }
+                        },
+                        {
+                            "targets": 1,
+                            'className': '',
+                            "render": function (data, type, full, meta) {
+                                return full.firstName;
+                            }
+                        },
+                        {
+                            "targets": 2,
+                            'className': '',
+                            "render": function (data, type, full, meta) {
+                                return full.lastName;
+                            }
+                        },
+                        {
+                            "targets": 3,
+                            'className': '',
+                            "render": function (data, type, full, meta) {
+                                return full.userName;
+                            }
+                        },
+                        {
+                            "targets": 4,
+                            'className': '',
+                            "render": function (data, type, full, meta) {
+                                return full.email;
+                            }
+                        },
+                        {
+                            "targets": 5,
+                            'className': '',
+                            "render": function (data, type, full, meta) {
+                                if (full.isActive == 3) {
+                                    var userStatus = "Pending Activation";
+                                    return userStatus;
+                                }
+                                if (full.isActive == 2) {
+                                    var userStatus = "Pending Approval";
+                                    return userStatus;
+
+                                }
+                                if (full.isActive == 1) {
+                                    var userStatus = "Activated"
+                                    return userStatus;
+                                }
+                                else {
+                                    var userStatus = "N/A"
+                                    return userStatus;
+                                }
+                            }
+                        },
+                        {
+                            "targets": 6,
+                            'className': '',
+                            'sortable': false,
+                            "render": function (data, type, full, meta) {
+                                var userActions = '';
+
+                                if (full.isActive == 3) {
+                                    userActions += '<button class="btn btn-sm bg-primary fa fa-solid fa-check mr-5" style="padding: 11px 15px;" onclick="AccountActivate(' + full.id + ')" title="Activate Account"></button>';
+                                } else if (full.isActive == 2) {
+                                    userActions += '<button class="btn btn-sm bg-primary icon-stats-bars" onclick="PendingApproval(' + full.id + ')" title="Pending Approval"></button>';
+                                }
+
+                                userActions += '<button class="btn btn-sm bg-info icon-pencil" onclick="updateFunction(' + full.id + ')" title="Edit"></button>' +
+                                    '<button class="btn btn-sm bg-danger icon-bin mr-5" onclick="deleteFunction(' + full.userEncId + ')" title="Delete"></button>';
+
+                                var dropdownWidth = (full.isActive == 3 || full.isActive == 2) ? '152px' : '101px';
+                                var dropdownMenu = '<ul class="dropdown-menu dropdown-menu-right" style="min-width:' + dropdownWidth + ';padding-left:5px !important;">' +
+                                    '<li>' + userActions + '</li>' +
+                                    '</ul>';
+
+                                return '<ul class="icons-list">' +
+                                    '<li class="dropdown">' +
+                                    '	<a href="#" class="dropdown-toggle" data-toggle="dropdown">' +
+                                    '		<i class="icon-menu9"></i>' +
+                                    '	</a>' +
+                                    dropdownMenu +
+                                    '</li>' +
+                                    '</ul>';
+                            }
+                        }
+
+                ],
+                "serverSide": "true",
+                "processing": "true",
+                "language":
+                {
+                    "processing": "<i class='icon-spinner spinner icon-2x'></i>",
+                    "search": "<span>Search :</span> _INPUT_",
+                    "searchPlaceholder": "Filter Data",
+                    "lengthMenu": "<span>Show :</span> _MENU_",
+                    "paginate": { 'first': 'First', 'last': 'Last', 'next': '&rarr;', 'previous': '&larr;' }
+                }
+            });
+        }
+
+        function searchTable() {
+            $('#userTable').DataTable().destroy();
+            loadTable();
+        }
+
+        function clearSearch() {
+            $('#searchName').val("");
+            $('#searchEmail').val("");
+            $('#searchStatus').val("").change();
+
+            $('#userTable').DataTable().destroy();
+            loadTable();
+        }
+
+        function deleteFunction(id) {
+            $('#confirmModalHeading').text('Warning!');
+            $('#confirmModalHeader').removeClass('bg-success');
+            $('#confirmModalHeader').addClass('bg-danger');
+            $('#confirmModalText').empty();
+            $('#confirmModalText').append('Do you really want to delete this user?<br />' +
+                'This record is going to permanently delete from the system.<br />' +
+                'The action cannot be undone.');
+
+            $("#confirmModalForm").attr("action", "../Admin/UpdateUserStatus?role=" + role + "&EncId=" + id + "&status=Deleted");
+
+            $('#confirmModal').modal('show');
+        }
+
+    </script>
+}

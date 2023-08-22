@@ -1,0 +1,797 @@
+﻿@using ITValetFrontEnd.HelperClasses;
+@{
+    ViewData["Title"] = "Messages";
+    Layout = "~/Views/Shared/_UserSideLayout.cshtml";
+
+    bool checkPath = ViewBag.Way == "ViewUserProfile" ? true : false;
+    string getUserChatOnTop = "";
+    if (checkPath)
+    {
+        getUserChatOnTop = ViewBag.UserId;
+    }
+}
+@section CustomCss{
+    <style>
+        a:hover {
+            cursor: pointer;
+        }
+    </style>
+}
+<input id="getUserChatOnTop" value="@getUserChatOnTop" hidden />
+<!-- Payment Selection Modal -->
+<div class="modal fade" id="paymentSelectionModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="paymentSelectionLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-center" id="paymentSelectionLabel">Choose How to Pay</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="payPal-Form" action="@Url.Action("PostCheckoutForOrder","PayPalClientGateway")" method="post">
+                    <input type="hidden" name="ClientId" value="@ViewBag.LoggedInUserId.Id">
+                    <input type="hidden" name="ValetId" value="">
+                    <input type="hidden" name="OfferId" value="">
+                    <input type="hidden" name="OrderTitle" value="">
+                    <input type="hidden" name="OrderDescription" value="">
+                    <input type="hidden" name="OrderPrice" value="">
+                    <input type="hidden" name="StartDate" value="">
+                    <input type="hidden" name="EndDate" value="">
+                    <button type="submit" class="btn btn-primary btn-md btn-block mb-2" id="payWithPayPalBtn">Pay With PayPal</button>
+                </form>
+                <button type="button" class="btn btn-success btn-md btn-block" id="payWithStripeBtn" onclick="processPayment('stripe')">Pay With Stripe</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Create Order -->
+<div class="modal fade" id="createOrderModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Create Order</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="closeModal()">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="projectSenderId" />
+                <input type="hidden" id="projectReceiverId" />
+                <div class="form-group">
+                    <label>Project Title</label>
+                    <div class="input-group mb-2 col-md-12 p-0">
+                        <input type="text" class="form-control" id="projectTitle">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>From DateTime</label>
+                    <div class="input-group mb-2 col-md-12 p-0">
+                        <input type="datetime-local" name="FromDateTime" onchange="onchangeStartAndEndDates(1)" class="form-control" id="projectStartDate" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>To DateTime</label>
+                    <div class="input-group mb-2 col-md-12 p-0">
+                        <input type="datetime-local" name="ToDateTime" onchange="onchangeStartAndEndDates(2)" class="form-control" id="projectEndDate" required>
+                    </div>
+                </div>
+
+                <div class="border-bottom">
+                    <label>Describe the required services - please be as detailed as possible:</label>
+                    <div class="form-group">
+                        <textarea class="form-control" id="projectDescription" rows="5" placeholder="I'm looking for..." required></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="text-danger" id="createOrderAlertMessages"></span>
+                <button type="button" class="btn btn-secondary" id="createOrderCloseBtn" data-dismiss="modal" onclick="closeModal()">Close</button>
+                <button type="button" class="btn btn-danger" id="createOrderSubmitBtn" onclick="postCreateOrder()">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="py-5 homepage-search-block position-relative">
+    <div class="container">
+        <div class="row">
+            <main class="col col-xl-12 order-xl-2 col-lg-12 order-lg-1 col-md-12 col-sm-12 col-12">
+                <div class="box shadow-sm rounded bg-white mb-3 osahan-chat">
+                    <h5 class="pl-3 pt-3 pr-3 border-bottom mb-0 pb-3">Messaging</h5>
+                    <div class="row m-0">
+                        <div class="border-right col-lg-5 col-xl-4 px-0">
+                            <div class="osahan-chat-left">
+                                <div class="position-relative icon-form-control p-3 border-bottom">
+                                    <i class="fa fa-search position-absolute"></i>
+                                    <input placeholder="Search messages" onkeyup="getSideBarList()" type="text" class="form-control">
+                                </div>
+                                <div class="osahan-chat-list" id="messagesSideBar">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-7 col-xl-8 px-0">
+                            <div class="p-3 d-flex align-items-center  border-bottom osahan-post-header">
+                                <div class="font-weight-bold mr-1 overflow-hidden">
+                                    <div class="text-truncate" id="chatUserName">
+                                    </div>
+                                </div>
+                                <div id="usrstatus" class="ml-2 small text-truncate overflow-hidden text-black-50">
+                                    <span class="ml-auto seller-card1 d-flex justify-content-end">
+                                        <span class="user-online-indicator is-online">
+                                            Online
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="osahan-chat-box p-3 border-top border-bottom bg-light" id="messageChatBoxArea">
+                            </div>
+                            <div class="w-100 border-top border-bottom">
+                                <textarea placeholder="Write a message…"
+                                          class="form-control border-0 p-3 shadow-none"
+                                          rows="2"
+                                          id="messageTextArea"></textarea>
+                            </div>
+                            <div class="p-3 d-flex align-items-center">
+                                <div class="overflow-hidden">
+                                    <button onclick="createOrder()" type="button" class="btn btn-light btn-sm rounded">
+                                        <i class="mdi mdi-coin"> </i>
+                                        Create an Offer
+                                    </button>
+                                </div>
+                                <span class="ml-auto">
+                                    <button onclick="sendMessageToServer()" id="sendMessageButton" type="button" class="btn btn-success btn-sm rounded">
+                                        <i class="mdi mdi-send"></i> Send
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+        </div>
+    </div>
+</section>
+
+
+@section CustomJs
+{
+    <script>
+        var getLoggedInUserId = "@ViewBag.LoggedInUserId.Id";
+        var getLoggedInUserRole = "@ViewBag.LoggedInUserId.Role";
+        getSideBarList("");
+        var getDefaultChat = false;
+        var getDefaultChatUserId = "";
+        var getDefaultChatUserName = "";
+        function getSideBarList(value) {
+            var getUserChatOnTop = '@getUserChatOnTop';
+            $.ajax({
+                type: 'GET',
+                url: "@ProjectVariables.BaseUrl" + "Message/GetMessageSideBarList?loggedInUserId=" + getLoggedInUserId + "&Name=" + value +
+                "&GetUserChatOnTop=" + getUserChatOnTop,
+                data: {
+
+                },
+                dataType: "json",
+                success: function (response) {
+                    $('#messagesSideBar').html("");
+                    var appendingSideBarMessageList = "";
+                    for (var item = 0; item < response.length; item++) {
+                        if (getDefaultChat == false) {
+                            getDefaultChatUserId = response[item].userDecId;
+                            getDefaultChatUserName = response[item].username;
+                            getDefaultChat = true;
+                        }
+                        var messageDescriptionLength = "";
+                        var LastMessageUsername = "You : ";
+                        var ProfileImage = "../frontAssets/images/user/s1.png";
+
+                        if (response[item].lastMessageUsername != null && response[item].lastMessageUsername != "") {
+                            LastMessageUsername = response[item].lastMessageUsername + ": ";
+                        }
+
+                        if (response[item].userImage != null && response[item].userImage != "") {
+                            ProfileImage = "@ProjectVariables.BaseUrlForImages" + response[item].userImage;
+                        }
+
+                        messageDescriptionLength = LastMessageUsername + "" + response[item].messageDescription;
+
+                        if (messageDescriptionLength != null && messageDescriptionLength != "") {
+                            if (messageDescriptionLength.length > 32) {
+                                messageDescriptionLength = messageDescriptionLength.substring(0, 31);
+                                messageDescriptionLength = messageDescriptionLength + "...";
+                            }
+                            else {
+                                messageDescriptionLength = messageDescriptionLength;
+                            }
+                        }
+                        appendingSideBarMessageList += '<a onclick="GetMessagesForUser(\'' + response[item].userDecId + '\', \'' + response[item].username + '\')"><div class="p-3 d-flex align-items-center border-bottom osahan-post-header overflow-hidden">' +
+                            '<div class="dropdown-list-image mr-3">' +
+                            '<img class="rounded-circle" src="' + ProfileImage + '" alt="">' +
+                            '</div>' +
+                            '<div class="font-weight-bold mr-1 overflow-hidden">' +
+                            '<div class="text-truncate">' + response[item].username +
+                            '<span id="chatRoom-' + response[item].userDecId + '" style="display: none;"><sup class="badge badge-success ml-1" style="font - size: 8px;">New</sup></span></div>' +
+                            '<div class="small text-truncate overflow-hidden text-black-50">' +
+                            messageDescriptionLength +
+                            '</div>' +
+                            '</div>' +
+                            '<span class="ml-auto mb-auto">' +
+                            '<div class="text-right text-muted pt-1 small">' + response[item].messageTime + '</div>' +
+                            '</span>' +
+                            '</div></a>';
+                    }
+                    $("#messagesSideBar").html(appendingSideBarMessageList);
+                },
+                error: function (response) {
+                },
+                complete: function () {
+                    //$('#messagesListSideBarLoader').hide();
+                    GetMessagesForUser(getDefaultChatUserId, getDefaultChatUserName);
+                }
+            });
+        }
+
+        function GetMessagesForUser(userId, name) {
+            getDefaultChatUserId = userId; // get the specific userId whose chat box is open on right side.
+
+            $("#chatUserName").html("");
+            $("#chatUserName").html(name);
+            $.ajax({
+                type: 'GET',
+                url: "@ProjectVariables.BaseUrl" + "Message/GetMessagesForUser?loggedInUserId=" + getLoggedInUserId + "&userId=" + userId,
+                data: {
+
+                },
+                dataType: "json",
+                success: function (response) {
+                    $('#messageChatBoxArea').html("");
+                    var appendingSideBarMessageList = "";
+                    var appendingSideBarStartTag = "<span>";
+                    var appendingSideBarEndTag = "";
+                    for (var item = 0; item < response.length; item++) {
+                        var ProfileImage = "../frontAssets/images/user/s1.png";
+                        var RequestedOrder = "";
+                        var RequestOrderButton = "";
+
+                        if (response[item].profileImage != null && response[item].profileImage != "") {
+                            ProfileImage = "@ProjectVariables.BaseUrlForImages" + response[item].profileImage;
+                        }
+
+                        messageDescriptionLength = response[item].messageDescription;
+
+                        //order work
+                        if (response[item].offerTitle != "" && response[item].offerTitle != null) {
+                            if (response[item].offerStatus == "1") {
+                                if (response[item].senderId == getLoggedInUserId) {
+                                    RequestOrderButton = '<p id="offerRequestText-' + response[item].offerTitleId + '" class="font-weight-bold font-italic">Offer Sent</p>';
+                                }
+                                else {
+                                    if (getLoggedInUserRole == 'Customer') {
+                                        RequestOrderButton = '<p id="offerRequestText-' + response[item].offerTitleId + '" class="font-weight-bold font-italic">Offer Requested</p>' +
+                                            '<button id="offerRequestBtnA-' + response[item].offerTitleId + '" class="btn btn-sm btn-primary btn-block" onclick="showPaymentModal(\'' + response[item].offerTitleId + '\')">Accept</button>' +
+                                            '<button id="offerRequestBtnR-' + response[item].offerTitleId + '" class="btn btn-sm btn-danger btn-block" onclick="orderStatus(\'' + response[item].offerTitleId + '\', \'Reject\')">Reject</button>';
+                                    } else {
+                                        RequestOrderButton = '<p id="offerRequestText-' + response[item].offerTitleId + '" class="font-weight-bold font-italic">Offer Requested</p>';
+                                    }
+                                }
+                            }
+                            if (response[item].offerStatus == "2") {
+                                RequestOrderButton = '<p id="offerRequestText-' + response[item].offerTitleId + '" class="font-weight-bold font-italic">Offer Accepted</p>';
+                            }
+                            if (response[item].offerStatus == "3") {
+                                RequestOrderButton = '<p id="offerRequestText-' + response[item].offerTitleId + '" class="font-weight-bold font-italic">Offer Cancelled</p>';
+                            }
+                            RequestedOrder = '<div class="box shadow-sm mb-3 rounded bg-white">' +
+                                '<div class="p-3 border-bottom">' +
+                                '<h6 class="text-dark"><span class="font-weight-bold" id="offerTitle' + response[item].offerTitleId + '">' + response[item].offerTitle + '</span></h6>' +
+                                '<p class="mb-0 text-muted mb-3" id="offerDescription' + response[item].offerTitleId + '">' + response[item].offerDescription + '</p>' +
+                                '<p class="mb-1"> Offer price: <i class="mdi mdi-coin"></i> $<span id="offerPrice' + response[item].offerTitleId + '">' + response[item].offerPrice + '</span></p>' +
+                                '<p class="mb-1">Started From: <i class="mdi mdi-clock"></i> <span id="startedDateTime' + response[item].offerTitleId + '">' + response[item].startedDateTime + '</span></p>' +
+                                '<p class="mb-1">Ending Time: <i class="mdi mdi-clock"></i> <span id="endedDateTime' + response[item].offerTitleId + '">' + response[item].endedDateTime + '</span></p>' +
+
+                                '<div class="p-1">' +
+                                RequestOrderButton +
+                                '</div>' +
+                                '</div>' +
+                                '</div>';
+                            messageDescriptionLength = RequestedOrder;
+                        }
+                        //end
+
+                        appendingSideBarMessageList += '<div class="d-flex align-items-center osahan-post-header">' +
+                            '<div class="dropdown-list-image mr-3 mb-auto">' +
+                            '<img class="rounded-circle" src="' + ProfileImage + '" alt="">' +
+                            '</div>' +
+                            '<div class="mr-1">' +
+                            '<div class="text-truncate h6 mb-3">' +
+                            response[item].username +
+                            '</div>' +
+                            '<p>' +
+                            messageDescriptionLength +
+                            '</p>' +
+                            '</div>' +
+                            '<span class="ml-auto mb-auto">' +
+                            '<div class="text-right text-muted pt-1 small">' + response[item].messageTime + '</div>' +
+                            '</span>' +
+                            '</div>';
+
+                    }
+                    $("#messageChatBoxArea").html('<span id="chatBoxDialogue-' + getDefaultChatUserId + '">' + appendingSideBarMessageList + '</span>');
+                },
+                error: function (response) {
+                },
+                complete: function () {
+                    $('#messagesListSideBarLoader').hide();
+                    scrollToBottom();
+                }
+            });
+        }
+
+        // Function to scroll to the bottom of the chat box
+        function scrollToBottom() {
+            var chatBox = document.querySelector('.osahan-chat-box');
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+    </script>
+
+    <!-- signalR send message  -->
+    <script src="~/js/signalr/dist/browser/signalr.js"></script>
+    <script>
+
+        "use strict";
+
+        var baseURL = "@ProjectVariables.BaseUrl";
+        var signalURL = "@ProjectVariables.SignalR_Url";
+        var connection = new signalR.HubConnectionBuilder().withUrl(signalURL).build();
+
+        //Disable the send button until connection is established.
+        document.getElementById("sendMessageButton").disabled = true;
+
+        connection.on("ReceiveMessage", function (senderId, receiverId, userName, userProfile, message, messageTime) {
+
+            $("#chatRoom-" + senderId).css("display", "inline");
+
+            // agr sender ki chat receiver side pr open ha to append krwao msg
+            var element = document.getElementById('chatBoxDialogue-' + senderId);
+            if (element) {
+                var ProfileImage = "../frontAssets/images/user/s1.png";
+                if (userProfile != null && userProfile != "") {
+                    ProfileImage = "@ProjectVariables.BaseUrlForImages" + userProfile;
+                }
+
+                var appendNewMessage = '<div class="d-flex align-items-center osahan-post-header">' +
+                    '<div class="dropdown-list-image mr-3 mb-auto">' +
+                    '<img class="rounded-circle" src="' + ProfileImage + '" alt="">' +
+                    '</div>' +
+                    '<div class="mr-1">' +
+                    '<div class="text-truncate h6 mb-3">' +
+                    userName +
+                    '</div>' +
+                    '<p>' +
+                    message +
+                    '</p>' +
+                    '</div>' +
+                    '<span class="ml-auto mb-auto">' +
+                    '<div class="text-right text-muted pt-1 small">' + messageTime + '</div>' +
+                    '</span>' +
+                    '</div>';
+
+                $("#chatBoxDialogue-" + senderId).append(appendNewMessage);
+
+                scrollToBottom();
+            }
+
+        });
+
+        connection.on("ReceiveOffer", function (offer, senderId, receiverId, userName, userProfile, messageTime) {
+
+            $("#chatRoom-" + senderId).css("display", "inline");
+
+            // agr sender ki chat receiver side pr open ha to append krwao msg
+            var element = document.getElementById('chatBoxDialogue-' + senderId);
+            if (element) {
+                var messageDescriptionLength = "";
+                var RequestedOrder = "";
+                var RequestOrderButton = "";
+                var ProfileImage = "../frontAssets/images/user/s1.png";
+                if (userProfile != null && userProfile != "") {
+                    ProfileImage = "@ProjectVariables.BaseUrlForImages" + userProfile;
+                }
+
+                if (offer != "" && offer != null) {
+                    if (offer.offerStatus == "1") {
+                        if (getLoggedInUserRole == 'Customer') {
+                            RequestOrderButton = '<p id="offerRequestText-' + offer.id + '" class="font-weight-bold font-italic">Offer Requested</p>' +
+                                '<button id="offerRequestBtnA-' + offer.id + '" class="btn btn-sm btn-primary btn-block" onclick="showPaymentModal(\'' + offer.id + '\')">Accept</button>' +
+                                '<button id="offerRequestBtnR-' + offer.id + '" class="btn btn-sm btn-danger btn-block" onclick="orderStatus(\'' + offer.id + '\', \'Reject\')">Reject</button>';
+                        }
+                        else {
+                            RequestOrderButton = '<p id="offerRequestText-' + offer.id + '" class="font-weight-bold font-italic">Offer Requested</p>';
+                        }
+                    }
+                    if (offer.offerStatus == "2") {
+                        RequestOrderButton = '<p id="offerRequestText-' + offer.id + '" class="font-weight-bold font-italic">Offer Accepted</p>';
+                    }
+                    if (offer.offerStatus == "3") {
+                        RequestOrderButton = '<p id="offerRequestText-' + offer.id + '" class="font-weight-bold font-italic">Offer Cancelled</p>';
+                    }
+                    RequestedOrder = '<div class="box shadow-sm mb-3 rounded bg-white">' +
+                        '<div class="p-3 border-bottom">' +
+                        '<h6 class="text-dark"><span class="font-weight-bold" id="offerTitle' + offer.id + '">' + offer.offerTitle + '</span></h6>' +
+                        '<p class="mb-0 text-muted mb-3" id="offerDescription' + offer.id + '">' + offer.offerDescription + '</p>' +
+                        '<p class="mb-1"> Offer price: <i class="mdi mdi-coin"></i> $<span id="offerPrice' + offer.id + '">' + offer.offerPrice + '</span></p>' +
+                        '<p class="mb-1">Started From: <i class="mdi mdi-clock"></i> <span id="startedDateTime' + offer.id + '">' + offer.startedDateTime + '</span></p>' +
+                        '<p class="mb-1">Ending Time: <i class="mdi mdi-clock"></i> <span id="endedDateTime' + offer.id + '">' + offer.endedDateTime + '</span></p>' +
+
+                        '<div class="p-1">' +
+                        RequestOrderButton +
+                        '</div>' +
+                        '</div>' +
+                        '</div>';
+                    messageDescriptionLength = RequestedOrder;
+
+                    var appendNewMessage = '<div class="d-flex align-items-center osahan-post-header">' +
+                        '<div class="dropdown-list-image mr-3 mb-auto">' +
+                        '<img class="rounded-circle" src="' + ProfileImage + '" alt="">' +
+                        '</div>' +
+                        '<div class="mr-1">' +
+                        '<div class="text-truncate h6 mb-3">' +
+                        userName +
+                        '</div>' +
+                        '<p>' +
+                        messageDescriptionLength +
+                        '</p>' +
+                        '</div>' +
+                        '<span class="ml-auto mb-auto">' +
+                        '<div class="text-right text-muted pt-1 small">' + messageTime + '</div>' +
+                        '</span>' +
+                        '</div>';
+
+                    $("#chatBoxDialogue-" + senderId).append(appendNewMessage);
+
+                    scrollToBottom();
+                }
+            }
+
+        });
+
+        connection.on("ChangeOfferStatus", function (offerId, offerTitle, senderId, receiverId, acceptorName, offerStatus) {
+
+            //var element = document.getElementById('offerRequestText-' + offerId);
+            //if (element)
+            //{
+            if (getLoggedInUserId == senderId) {
+                alert("Your Offer '" + offerTitle + "' " + offerStatus + " by '" + acceptorName + "'");
+
+                var message = "";
+                if (offerStatus == "accepted") {
+                    message = "Offer Accepted";
+                }
+                if (offerStatus == "rejected") {
+                    message = "Offer Rejected";
+                }
+
+                $("#offerRequestText-" + offerId).text(message);
+            }
+            //}
+        });
+
+        connection.start().then(function () {
+            document.getElementById("sendMessageButton").disabled = false;
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+    </script>
+    
+    <script>
+        var recieverUserId = 0;
+        function sendMessageToServer() {
+            var $messageInput = $("#messageTextArea");
+            const senderId = getLoggedInUserId;
+            const receiverId = getDefaultChatUserId;
+            const message = $messageInput.val();
+            var trimmedMessage = message.trim();
+            // Check if the message is valid (not empty or null)
+            if (!message || trimmedMessage.length <= 0) {
+                alert("Invalid message: Message cannot be empty.");
+                $messageInput.val("");
+                return;
+            }
+
+            var data = {
+                SenderId: senderId,
+                ReceiverId: receiverId,
+                MessageDescription: message,
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "@ProjectVariables.BaseUrl" + "Message/PostAddMessage",
+                //url: "@ProjectVariables.BaseUrl" + "Message/PostAddMessage?SenderId=" + senderId + "&ReceiverId=" + receiverId + "&MessageDescription=" + message,
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(data),
+                success: function (data) {
+                    console.log("Message sent successfully!", data);
+                    $messageInput.val("");
+
+                    if (getLoggedInUserId == senderId) {
+                        var ProfileImage = "../frontAssets/images/user/s1.png";
+
+                        if (data.profile != null && data.profile != "") {
+                            ProfileImage = "@ProjectVariables.BaseUrlForImages" + data.profile;
+                        }
+
+                        var appendNewMessage = '<div class="d-flex align-items-center osahan-post-header">' +
+                            '<div class="dropdown-list-image mr-3 mb-auto">' +
+                            '<img class="rounded-circle" src="' + ProfileImage + '" alt="">' +
+                            '</div>' +
+                            '<div class="mr-1">' +
+                            '<div class="text-truncate h6 mb-3">' +
+                            data.userName +
+                            '</div>' +
+                            '<p>' +
+                            data.message +
+                            '</p>' +
+                            '</div>' +
+                            '<span class="ml-auto mb-auto">' +
+                            '<div class="text-right text-muted pt-1 small">' + data.messageTime + '</div>' +
+                            '</span>' +
+                            '</div>';
+
+                        $("#chatBoxDialogue-" + getDefaultChatUserId).append(appendNewMessage);
+
+                        scrollToBottom();
+                    }
+
+                },
+                error: function (error) {
+                    alert("Something' went wrong while sending message.");
+                    alert(error.responseText);
+                },
+                complete: function () { }
+            });
+        }
+    </script>
+
+    <script>
+        // order work
+        function createOrder() {
+            $("#projectSenderId").val(getLoggedInUserId);
+            $("#projectReceiverId").val(getDefaultChatUserId);
+            $("#createOrderModal").modal("show");
+        }
+
+        function closeModal() {
+            resetModalValues();
+            $("#createOrderModal").modal("hide");
+        }
+
+        function resetModalValues() {
+            $("#projectSenderId").val("");
+            $("#projectReceiverId").val("");
+            $("#projectTitle").val("");
+            $("#projectStartDate").val(null);
+            $("#projectEndDate").val(null);
+            $("#projectDescription").val("");
+        }
+
+        function postCreateOrder() {
+            var projectSenderId = $("#projectSenderId").val();
+            var projectReceiverId = $("#projectReceiverId").val();
+            var projectTitle = $("#projectTitle").val();
+            var projectStartDate = $("#projectStartDate").val();
+            var projectEndDate = $("#projectEndDate").val();
+            var projectDescription = $("#projectDescription").val();
+            $("#createOrderSubmitBtn").prop("disabled", true);
+
+            if (projectTitle == "" || projectTitle == null) {
+                $("#createOrderAlertMessages").text("All Fields are Required");
+                $("#createOrderSubmitBtn").prop("disabled", false);
+                return;
+            }
+            if (projectStartDate == "" || projectStartDate == null) {
+                $("#createOrderAlertMessages").text("All Fields are Required");
+                $("#createOrderSubmitBtn").prop("disabled", false);
+                return;
+            }
+            if (projectEndDate == "" || projectEndDate == null) {
+                $("#createOrderAlertMessages").text("All Fields are Required");
+                $("#createOrderSubmitBtn").prop("disabled", false);
+                return;
+            }
+            if (projectDescription == "" || projectDescription == null) {
+                $("#createOrderAlertMessages").text("All Fields are Required");
+                $("#createOrderSubmitBtn").prop("disabled", false);
+                return;
+            }
+            var data = {
+                MessageDescription: "Offer Send",
+                SenderId: projectSenderId,
+                ReceiverId: projectReceiverId,
+                CustomerId: projectSenderId,
+                ValetId: projectReceiverId,
+                OfferTitle: projectTitle,
+                OfferDescription: projectDescription,
+                StartedDateTime: projectStartDate,
+                EndedDateTime: projectEndDate,
+            };
+            var $messageInput = $("#messageTextArea");
+
+            $.ajax({
+                type: 'POST',
+                url: "@ProjectVariables.BaseUrl" + "Message/PostAddMessage",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(data),
+                dataType: "json",
+                success: function (data) {
+                    console.log("offer sent successfully!", data);
+                    $messageInput.val("");
+
+                    if (getLoggedInUserId == data.senderId) {
+                        var messageDescriptionLength = "";
+                        var RequestedOrder = "";
+                        var RequestOrderButton = "";
+                        var ProfileImage = "../frontAssets/images/user/s1.png";
+                        if (data.profile != null && data.profile != "") {
+                            ProfileImage = "@ProjectVariables.BaseUrlForImages" + data.profile;
+                        }
+
+                        //
+                        if (data.offer != "" && data.offer != null) {
+                            if (data.offer.offerStatus == "1") {
+                                RequestOrderButton = '<p id="offerRequestText-' + data.offer.id + '" class="font-weight-bold font-italic">Offer Sent</p>';
+                            }
+                            if (data.offer.offerStatus == "2") {
+                                RequestOrderButton = '<p id="offerRequestText-' + data.offer.id + '" class="font-weight-bold font-italic">Offer Accepted</p>';
+                            }
+                            if (data.offer.offerStatus == "3") {
+                                RequestOrderButton = '<p id="offerRequestText-' + data.offer.id + '" class="font-weight-bold font-italic">Offer Cancelled</p>';
+                            }
+                            RequestedOrder = '<div class="box shadow-sm mb-3 rounded bg-white">' +
+                                '<div class="p-3 border-bottom">' +
+                                '<h6 class="text-dark"><span class="font-weight-bold" id="offerTitle' + data.offer.id + '">' + data.offer.offerTitle + '</span></h6>' +
+                                '<p class="mb-0 text-muted mb-3" id="offerDescription' + data.offer.id + '">' + data.offer.offerDescription + '</p>' +
+                                '<p class="mb-1"> Offer price: <i class="mdi mdi-coin"></i> $<span id="offerPrice' + data.offer.id + '">' + data.offer.offerPrice + '</span></p>' +
+                                '<p class="mb-1">Started From: <i class="mdi mdi-clock"></i> <span id="startedDateTime' + data.offer.id + '">' + data.offer.startedDateTime + '</span></p>' +
+                                '<p class="mb-1">Ending Time: <i class="mdi mdi-clock"></i> <span id="endedDateTime' + data.offer.id + '">' + data.offer.endedDateTime + '</span></p>' +
+
+                                '<div class="p-1">' +
+                                RequestOrderButton +
+                                '</div>' +
+                                '</div>' +
+                                '</div>';
+                            messageDescriptionLength = RequestedOrder;
+                        }
+
+
+
+
+                        var appendNewMessage = '<div class="d-flex align-items-center osahan-post-header">' +
+                            '<div class="dropdown-list-image mr-3 mb-auto">' +
+                            '<img class="rounded-circle" src="' + ProfileImage + '" alt="">' +
+                            '</div>' +
+                            '<div class="mr-1">' +
+                            '<div class="text-truncate h6 mb-3">' +
+                            data.userName +
+                            '</div>' +
+                            '<p>' +
+                            messageDescriptionLength +
+                            '</p>' +
+                            '</div>' +
+                            '<span class="ml-auto mb-auto">' +
+                            '<div class="text-right text-muted pt-1 small">' + data.messageTime + '</div>' +
+                            '</span>' +
+                            '</div>';
+
+                        $("#chatBoxDialogue-" + getDefaultChatUserId).append(appendNewMessage);
+
+                        scrollToBottom();
+                    }
+                },
+                error: function (error) {
+                    alert("fail to creare offer");
+                    alert(error.responseText);
+                },
+                complete: function () {
+                    $("#createOrderSubmitBtn").prop("disabled", false);
+                    $("#createOrderCloseBtn").click();
+                }
+            });
+        }
+
+        function onchangeStartAndEndDates(value) {
+            var projectStartDate = $("#projectStartDate").val();
+            var projectEndDate = $("#projectEndDate").val();
+            if ((projectStartDate != "" && projectStartDate != null) && (projectEndDate != "" && projectEndDate != null)) {
+                if (projectEndDate <= projectStartDate) {
+                    $("#createOrderAlertMessages").text("End Date Must Be Greater Than Start Date");
+                    $("#createOrderSubmitBtn").prop("disabled", true);
+                    $("#projectStartDate").val(null);
+                    $("#projectEndDate").val(null);
+                    return;
+                }
+                else {
+                    $("#createOrderSubmitBtn").prop("disabled", false);
+                }
+            }
+        }
+
+        function showPaymentModal(offerId) {
+
+            var offerTitle = $("#offerTitle" + offerId).text(); // Use .text() to retrieve the text content
+            var offerDescription = $("#offerDescription" + offerId).text();
+            var offerPrice = $("#offerPrice" + offerId).text();
+            var startedDateTime = $("#startedDateTime" + offerId).text();
+            var endedDateTime = $("#endedDateTime" + offerId).text();
+            var valetId = getDefaultChatUserId;
+
+            // Populate the hidden fields in the payment form
+            $('#payPal-Form [name="OrderTitle"]').val(offerTitle);
+            $('#payPal-Form [name="OrderDescription"]').val(offerDescription);
+            $('#payPal-Form [name="OrderPrice"]').val(offerPrice);
+            $('#payPal-Form [name="StartDate"]').val(startedDateTime);
+            $('#payPal-Form [name="EndDate"]').val(endedDateTime);
+            $('#payPal-Form [name="OfferId"]').val(offerId);
+            $('#payPal-Form [name="ValetId"]').val(valetId);
+            // Show the modal
+            $('#paymentSelectionModal').modal('show');
+        }
+
+        function orderStatus(value, status) {
+            var offerTitle = $("#offerTitle" + value).val();
+            var offerDescription = $("#offerDescription" + value).val();
+            var offerPrice = $("#offerPrice" + value).val();
+            var startedDateTime = $("#startedDateTime" + value).val();
+            var endedDateTime = $("#endedDateTime" + value).val();
+            var data = {
+                OfferDetailId: value,
+                MessageDescription: status,
+                OfferTitle: offerTitle,
+                OfferDescription: offerDescription,
+                OfferPrice: offerPrice,
+                StartedDateTime: startedDateTime,
+                EndedDateTime: endedDateTime,
+            };
+            $.ajax({
+                type: 'PUT',
+                url: "@ProjectVariables.BaseUrl" + "Message/UpdateOrderStatus",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(data),
+                dataType: "json",
+                success: function (response) {
+                    if (response.status == true) {
+                        var message = "";
+                        if (status == "Accept") {
+                            message = "Offer Accepted";
+                        }
+                        if (status == "Reject") {
+                            message = "Offer Rejected";
+                        }
+
+                        $("#offerRequestText-" + response.id).text(message);
+                        //hide both buttons
+
+                        $("#offerRequestBtnA-" + response.id).css("display", "none");
+                        $("#offerRequestBtnR-" + response.id).css("display", "none");
+
+                    }
+
+                },
+                error: function (error) {
+
+                },
+                complete: function () {
+
+                }
+            });
+        }
+    </script>
+
+}
